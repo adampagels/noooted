@@ -8,14 +8,14 @@
 import SwiftUI
 
 struct ContentView: View {
+    @Environment(\.managedObjectContext) var moc
+    @FetchRequest(sortDescriptors: []) var notes: FetchedResults<Note>
     var body: some View {
         VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundColor(.accentColor)
-            Text("Hello, world!")
+            List(notes) { note in
+                Text(note.title ?? "Unknown")
+            }
         }
-        .padding()
     }
 }
 
