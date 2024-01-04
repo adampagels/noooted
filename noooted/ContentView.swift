@@ -15,7 +15,25 @@ struct ContentView: View {
             List(notes) { note in
                 Text(note.title ?? "Unknown")
             }
+            Spacer()
+            HStack {
+                Spacer()
+                Button(action: {
+                    print("Button tapped!")
+                }) {
+                    Image(systemName: "plus")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 24, height: 24)
+                        .padding()
+                        .foregroundColor(.white)
+                        .background(Color.black)
+                        .clipShape(Circle())
+                }
+                .padding(50)
+            }
         }
+        .edgesIgnoringSafeArea(.bottom)
     }
 }
 
