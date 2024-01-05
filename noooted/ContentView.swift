@@ -10,30 +10,37 @@ import SwiftUI
 struct ContentView: View {
     @Environment(\.managedObjectContext) var moc
     @FetchRequest(sortDescriptors: []) var notes: FetchedResults<Note>
+    
+    @State private var showAddScreen = false
     var body: some View {
-        VStack {
-            List(notes) { note in
-                Text(note.title ?? "Unknown")
-            }
-            Spacer()
-            HStack {
-                Spacer()
-                Button(action: {
-                    print("Button tapped!")
-                }) {
-                    Image(systemName: "plus")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 24, height: 24)
-                        .padding()
-                        .foregroundColor(.white)
-                        .background(Color.black)
-                        .clipShape(Circle())
+        NavigationView {
+            VStack {
+                List(notes) { note in
+                    Text(note.title ?? "Unknown")
                 }
-                .padding(50)
+                Spacer()
+                HStack {
+                    Spacer()
+                    Button(action: {
+                        showAddScreen.toggle()
+                    }) {
+                        Image(systemName: "plus")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 24, height: 24)
+                            .padding()
+                            .foregroundColor(.white)
+                            .background(Color.black)
+                            .clipShape(Circle())
+                    }
+                    .padding(50)
+                }
+            }
+            .edgesIgnoringSafeArea(.bottom)
+            .sheet(isPresented: $showAddScreen) {
+                NoteView()
             }
         }
-        .edgesIgnoringSafeArea(.bottom)
     }
 }
 
