@@ -9,6 +9,7 @@ import SwiftUI
 
 struct NoteView: View {
     @Environment(\.managedObjectContext) var moc
+    @Environment(\.dismiss) var dismiss
     
     @State private var title = ""
     @State private var content = ""
@@ -71,8 +72,17 @@ struct NoteView: View {
                 TextEditor(text: $content)
             }
             Button("Add Note") {
-                print("button clicked")
-            }
+                let newNote = Note(context: moc)
+                newNote.id = UUID()
+                newNote.title = title
+                newNote.content = content
+                newNote.tagColor = tagColor
+                newNote.isFavorite = false
+                newNote.lastUpdated = Date.now
+                
+                try? moc.save()
+                dismiss()
+            }.disabled(content.isEmpty)
             
         }
     }
