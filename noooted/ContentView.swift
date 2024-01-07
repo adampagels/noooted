@@ -1,4 +1,4 @@
-//
+
 //  ContentView.swift
 //  noooted
 //
@@ -11,38 +11,46 @@ struct ContentView: View {
     @Environment(\.managedObjectContext) var moc
     @FetchRequest(sortDescriptors: []) var notes: FetchedResults<Note>
     
+    @State private var selectedNote: Note?
     @State private var showAddScreen = false
+    
     var body: some View {
-        NavigationView {
-            VStack {
-                List(notes) { note in
-                    Text(note.title ?? "Unknown")
+        ZStack {
+            List(notes) { note in
+                Button(note.title ?? "Unknown") {
+                    selectedNote = note
                 }
+            }
+            .scrollContentBackground(.hidden)
+            .sheet(item: $selectedNote) { item in
+                NoteView(note: item)
+            }
+            
+            HStack {
                 Spacer()
-                HStack {
-                    Spacer()
-                    Button(action: {
-                        showAddScreen.toggle()
-                    }) {
-                        Image(systemName: "plus")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 24, height: 24)
-                            .padding()
-                            .foregroundColor(.white)
-                            .background(Color.black)
-                            .clipShape(Circle())
-                    }
-                    .padding(50)
+                Button(action: {
+                    showAddScreen.toggle()
+                }) {
+                    Image(systemName: "plus")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 24, height: 24)
+                        .padding()
+                        .foregroundColor(.white)
+                        .background(Color.black)
+                        .clipShape(Circle())
                 }
+                .padding(50)
             }
-            .edgesIgnoringSafeArea(.bottom)
-            .sheet(isPresented: $showAddScreen) {
-                NoteView()
-            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
+        }
+        .edgesIgnoringSafeArea(.bottom)
+        .sheet(isPresented: $showAddScreen) {
+            NoteView()
         }
     }
 }
+
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {

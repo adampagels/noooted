@@ -10,17 +10,41 @@ import SwiftUI
 struct NoteView: View {
     @Environment(\.managedObjectContext) var moc
     @Environment(\.dismiss) var dismiss
+    var note: Note?
     
     @State private var title = ""
     @State private var content = ""
-    @State private var tagColor = "red"
+    @State private var tagColor = ""
+    @State private var isFavorite = false
+    @State private var lastUpdated: Date? = nil
     
     func changeTagColor (tag: String) {
         tagColor = tag
     }
     
+    var formattedDate: String {
+        guard let date = lastUpdated else {
+            return ""
+        }
+        
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .medium
+        
+        return formatter.string(from: date)
+    }
+    
+    init(note: Note? = nil) {
+        _title = State(initialValue: note?.title ?? "")
+        _content = State(initialValue: note?.content ?? "")
+        _tagColor = State(initialValue: note?.tagColor ?? "red")
+        _isFavorite = State(initialValue: note?.isFavorite ?? false)
+        _lastUpdated = State(initialValue: note?.lastUpdated ?? nil)
+    }
+    
     var body: some View {
         Form {
+            Text("\(formattedDate)")
             Section {
                 TextField("Title", text: $title)
             }
