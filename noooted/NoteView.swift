@@ -14,7 +14,7 @@ struct NoteView: View {
     
     @State private var title = ""
     @State private var content = ""
-    @State private var tagColor = ""
+    @State private var tagColor = "red"
     @State private var isFavorite = false
     @State private var lastUpdated: Date? = nil
     
@@ -34,12 +34,39 @@ struct NoteView: View {
         return formatter.string(from: date)
     }
     
-    init(note: Note? = nil) {
-        _title = State(initialValue: note?.title ?? "")
-        _content = State(initialValue: note?.content ?? "")
-        _tagColor = State(initialValue: note?.tagColor ?? "red")
-        _isFavorite = State(initialValue: note?.isFavorite ?? false)
-        _lastUpdated = State(initialValue: note?.lastUpdated ?? nil)
+    func createNote() {
+        let newNote = Note(context: moc)
+        newNote.id = UUID()
+        newNote.title = title
+        newNote.content = content
+        newNote.tagColor = tagColor
+        newNote.isFavorite = false
+        newNote.lastUpdated = Date.now
+        do {
+            try moc.save()
+            dismiss()
+        } catch {
+            print("Error saving note: \(error)")
+        }
+    }
+    
+    func updateNote() {
+        print(note)
+        guard let existingNote = note else {
+            print("Error retrieving note")
+            return
+        }
+        existingNote.title = title
+        existingNote.content = content
+        existingNote.tagColor = tagColor
+        existingNote.lastUpdated = Date.now
+        
+        do {
+            try moc.save()
+            dismiss()
+        } catch {
+            print("Error updating note: \(error)")
+        }
     }
     
     var body: some View {
@@ -95,19 +122,19 @@ struct NoteView: View {
             Section {
                 TextEditor(text: $content)
             }
-            Button("Add Note") {
-                let newNote = Note(context: moc)
-                newNote.id = UUID()
-                newNote.title = title
-                newNote.content = content
-                newNote.tagColor = tagColor
-                newNote.isFavorite = false
-                newNote.lastUpdated = Date.now
-                
-                try? moc.save()
-                dismiss()
+            Button(note != nil ? "Update" : "Create") {
+                note != nil ? updateNote() : createNote()
             }.disabled(content.isEmpty)
             
+        }
+        .onAppear {
+            if let note = note {
+                title = note.title ?? ""
+                content = note.content ?? ""
+                tagColor = note.tagColor ?? "red"
+                isFavorite = note.isFavorite
+                lastUpdated = note.lastUpdated
+            }
         }
     }
 }
