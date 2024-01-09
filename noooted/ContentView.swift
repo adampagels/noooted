@@ -9,7 +9,9 @@ import SwiftUI
 
 struct ContentView: View {
     @Environment(\.managedObjectContext) var moc
-    @FetchRequest(sortDescriptors: []) var notes: FetchedResults<Note>
+    @FetchRequest(sortDescriptors: [
+        SortDescriptor(\.lastUpdated, order: .reverse)
+    ]) var notes: FetchedResults<Note>
     
     @State private var selectedNote: Note?
     @State private var showAddScreen = false

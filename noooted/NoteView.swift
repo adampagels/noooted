@@ -51,7 +51,6 @@ struct NoteView: View {
     }
     
     func updateNote() {
-        print(note)
         guard let existingNote = note else {
             print("Error retrieving note")
             return
