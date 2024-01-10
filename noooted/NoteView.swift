@@ -68,8 +68,28 @@ struct NoteView: View {
         }
     }
     
+    private func deleteNote() {
+        guard let existingNote = note else {
+            print("Error retrieving note")
+            return
+        }
+        moc.delete(existingNote)
+        
+        do {
+            try moc.save()
+            dismiss()
+        } catch {
+            print(error)
+        }
+    }
+    
     var body: some View {
-        Form {
+        VStack {
+            Button {
+                deleteNote()
+            } label: {
+                Image(systemName: "trash")
+            }.disabled(note == nil)
             Text("\(formattedDate)")
             Section {
                 TextField("Title", text: $title)
