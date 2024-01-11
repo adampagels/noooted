@@ -166,7 +166,7 @@ struct NoteView: View {
             ZStack {
                 RoundedRectangle(cornerRadius: 8).offset(x: 3, y: 5)
                 RoundedRectangle(cornerRadius: 8).foregroundColor(Color.white)
-                TextEditor(text: $content)
+                TextEditor(text: $content).padding()
                 RoundedRectangle(cornerRadius: 8).stroke(style:StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
             }
         }
