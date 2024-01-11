@@ -85,66 +85,90 @@ struct NoteView: View {
     
     var body: some View {
         VStack {
-            Button {
-                deleteNote()
-            } label: {
-                Image(systemName: "trash")
-            }.disabled(note == nil)
-            Text("\(formattedDate)")
-            Section {
-                TextField("Title", text: $title)
-            }
             HStack {
-                Circle().fill(Color.red)
-                    .onTapGesture {
+                Text("\(formattedDate)")
+                
+                Button {
+                    deleteNote()
+                } label: {
+                    Image(systemName: "trash")
+                }.disabled(note == nil)
+            }.padding()
+            
+            ZStack {
+                RoundedRectangle(cornerRadius: 8).offset(x: 3, y: 5)
+                RoundedRectangle(cornerRadius: 8).foregroundColor(Color.white)
+                Section {
+                    TextField("What should we call this?", text: $title)
+                }.padding(14)
+                RoundedRectangle(cornerRadius: 8).stroke(style:StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
+            }
+            .frame(height: 40)
+            
+            HStack {
+                ZStack {
+                    Circle().offset(x: 1.5, y: 2).fill(Color.black)
+                    Circle().fill(Color.red).onTapGesture {
                         changeTagColor(tag: "red")
                     }
-                    .overlay(tagColor == "red" ? Circle().stroke(Color.black, lineWidth: 3) : nil)
+                    Circle().stroke(style: StrokeStyle(lineWidth: 1, lineCap: .round, lineJoin: .round))
+                }.saturation(tagColor == "red" ? 1 : 0.6)
                 
-                Circle().fill(Color.orange)
-                    .onTapGesture {
+                ZStack {
+                    Circle().offset(x: 1.5, y: 2).fill(Color.black)
+                    Circle().fill(Color.orange).onTapGesture {
                         changeTagColor(tag: "orange")
                     }
-                    .overlay(tagColor == "orange" ? Circle().stroke(Color.black, lineWidth: 3) : nil)
+                    Circle().stroke(style: StrokeStyle(lineWidth: 1, lineCap: .round, lineJoin: .round))
+                }.saturation(tagColor == "orange" ? 1 : 0.6)
                 
-                Circle().fill(Color.yellow)
-                    .onTapGesture {
+                ZStack {
+                    Circle().offset(x: 1.5, y: 2).fill(Color.black)
+                    Circle().fill(Color.yellow).onTapGesture {
                         changeTagColor(tag: "yellow")
                     }
-                    .overlay(tagColor == "yellow" ? Circle().stroke(Color.black, lineWidth: 3) : nil)
+                    Circle().stroke(style: StrokeStyle(lineWidth: 1, lineCap: .round, lineJoin: .round))
+                }.saturation(tagColor == "yellow" ? 1 : 0.6)
                 
-                Circle().fill(Color.green)
-                    .onTapGesture {
+                ZStack {
+                    Circle().offset(x: 1.5, y: 2).fill(Color.black)
+                    Circle().fill(Color.green).onTapGesture {
                         changeTagColor(tag: "green")
                     }
-                    .overlay(tagColor == "green" ? Circle().stroke(Color.black, lineWidth: 3) : nil)
+                    Circle().stroke(style: StrokeStyle(lineWidth: 1, lineCap: .round, lineJoin: .round))
+                }.saturation(tagColor == "green" ? 1 : 0.6)
                 
-                Circle().fill(Color.blue)
-                    .onTapGesture {
+                ZStack {
+                    Circle().offset(x: 1.5, y: 2).fill(Color.black)
+                    Circle().fill(Color.blue).onTapGesture {
                         changeTagColor(tag: "blue")
                     }
-                    .overlay(tagColor == "blue" ? Circle().stroke(Color.black, lineWidth: 3) : nil)
+                    Circle().stroke(style: StrokeStyle(lineWidth: 1, lineCap: .round, lineJoin: .round))
+                }.saturation(tagColor == "blue" ? 1 : 0.6)
                 
-                Circle().fill(Color.indigo)
-                    .onTapGesture {
+                ZStack {
+                    Circle().offset(x: 1.5, y: 2).fill(Color.black)
+                    Circle().fill(Color.indigo).onTapGesture {
                         changeTagColor(tag: "indigo")
                     }
-                    .overlay(tagColor == "indigo" ? Circle().stroke(Color.black, lineWidth: 3) : nil)
+                    Circle().stroke(style: StrokeStyle(lineWidth: 1, lineCap: .round, lineJoin: .round))
+                }.saturation(tagColor == "indigo" ? 1 : 0.6)
                 
-                Circle().fill(Color.purple)
-                    .onTapGesture {
+                ZStack {
+                    Circle().offset(x: 1.5, y: 2).fill(Color.black)
+                    Circle().fill(Color.purple).onTapGesture {
                         changeTagColor(tag: "purple")
                     }
-                    .overlay(tagColor == "purple" ? Circle().stroke(Color.black, lineWidth: 3) : nil)
-            }
+                    Circle().stroke(style: StrokeStyle(lineWidth: 1, lineCap: .round, lineJoin: .round))
+                }.saturation(tagColor == "purple" ? 1 : 0.6)
+            }.frame(maxWidth: .infinity, maxHeight: 100)
             
-            Section {
+            ZStack {
+                RoundedRectangle(cornerRadius: 8).offset(x: 3, y: 5)
+                RoundedRectangle(cornerRadius: 8).foregroundColor(Color.white)
                 TextEditor(text: $content)
+                RoundedRectangle(cornerRadius: 8).stroke(style:StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
             }
-            Button(note != nil ? "Update" : "Create") {
-                note != nil ? updateNote() : createNote()
-            }.disabled(content.isEmpty)
-            
         }
         .onAppear {
             if let note = note {
@@ -155,6 +179,7 @@ struct NoteView: View {
                 lastUpdated = note.lastUpdated
             }
         }
+        .padding(EdgeInsets(top:0, leading: 20, bottom: 20, trailing: 20))
     }
 }
 
