@@ -37,7 +37,7 @@ struct NoteView: View {
     func createNote() {
         let newNote = Note(context: moc)
         newNote.id = UUID()
-        newNote.title = title
+        newNote.title = title.isEmpty ? "Untitled" : title
         newNote.content = content
         newNote.tagColor = tagColor
         newNote.isFavorite = false
@@ -55,7 +55,7 @@ struct NoteView: View {
             print("Error retrieving note")
             return
         }
-        existingNote.title = title
+        existingNote.title = title.isEmpty ? "Untitled" : title
         existingNote.content = content
         existingNote.tagColor = tagColor
         existingNote.lastUpdated = Date.now
@@ -177,6 +177,20 @@ struct NoteView: View {
                 tagColor = note.tagColor ?? "red"
                 isFavorite = note.isFavorite
                 lastUpdated = note.lastUpdated
+            }
+        }
+        .onDisappear {
+            if note != nil {
+                if title.isEmpty && content.isEmpty {
+                    deleteNote()
+                } else {
+                    updateNote()
+                }
+            } else {
+                if title.isEmpty && content.isEmpty {
+                    return
+                }
+                createNote()
             }
         }
         .padding(EdgeInsets(top:0, leading: 20, bottom: 20, trailing: 20))
