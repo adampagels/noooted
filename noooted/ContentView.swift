@@ -26,17 +26,48 @@ struct ContentView: View {
     @State private var selectedNote: Note?
     @State private var showAddScreen = false
     
+    func formattedDate(date: Date) -> String {
+        return date.formatted()
+    }
+    
     var body: some View {
         ZStack {
             List(notes) { note in
                 ZStack {
-                    RoundedRectangle(cornerRadius: 8).offset(x: 3, y: 5)
-                    RoundedRectangle(cornerRadius: 8) .foregroundColor(colorDict[note.tagColor ?? "red"])
-                    Button(note.title ?? "Untitled") {
+                    RoundedRectangle(cornerRadius: 8)
+                        .offset(x: 3, y: 5)
+                    
+                    RoundedRectangle(cornerRadius: 8)
+                        .foregroundColor(colorDict[note.tagColor ?? "red"])
+                    
+                    Button {
                         selectedNote = note
-                    }.padding(10).foregroundColor(.black)
-                    RoundedRectangle(cornerRadius: 8).stroke(style:StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
-                }.padding(EdgeInsets(top:5, leading: 0, bottom: 5, trailing: 0)).listRowSeparator(.hidden)
+                    } label: {
+                        VStack {
+                            HStack {
+                                Text("\(formattedDate(date: note.lastUpdated ?? Date.now))")
+                                    .font(.system(size: 13))
+                                    .padding(EdgeInsets(top: 3, leading: 0, bottom: 3, trailing: 5))
+                                    .opacity(0.7)
+                                Spacer()
+                            }
+                            HStack {
+                                Text("\(note.title ?? "Untitled")")
+                                    .lineLimit(1)
+                                    .bold()
+                                Spacer()
+                            }
+                        }
+                        .padding(EdgeInsets(top: 3, leading: 10, bottom: 3, trailing: 5))
+                    }
+                    .padding(EdgeInsets(top:0, leading: 0, bottom: 10, trailing: 10))
+                    .foregroundColor(.black)
+                    
+                    RoundedRectangle(cornerRadius: 8)
+                        .stroke(style:StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
+                }
+                .padding(EdgeInsets(top:5, leading: 0, bottom: 5, trailing: 0))
+                .listRowSeparator(.hidden)
             }
             .scrollContentBackground(.hidden)
             .sheet(item: $selectedNote) { item in
