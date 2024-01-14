@@ -40,7 +40,7 @@ struct NoteView: View {
         newNote.title = title.isEmpty ? "Untitled" : title
         newNote.content = content
         newNote.tagColor = tagColor
-        newNote.isFavorite = false
+        newNote.isFavorite = isFavorite
         newNote.lastUpdated = Date.now
         do {
             try moc.save()
@@ -58,6 +58,7 @@ struct NoteView: View {
         existingNote.title = title.isEmpty ? "Untitled" : title
         existingNote.content = content
         existingNote.tagColor = tagColor
+        existingNote.isFavorite = isFavorite
         existingNote.lastUpdated = Date.now
         
         do {
@@ -85,15 +86,54 @@ struct NoteView: View {
     
     var body: some View {
         VStack {
-            HStack {
+            ZStack {
+                HStack {
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 8)
+                            .offset(x: 3, y: 5)
+                        
+                        RoundedRectangle(cornerRadius: 8)
+                            .foregroundColor(.yellow)
+                        
+                        Button {
+                            isFavorite.toggle()
+                        } label: {
+                            Image(systemName: isFavorite ? "star.fill" : "star")
+                                .foregroundColor(.white)
+                        }
+                        
+                        RoundedRectangle(cornerRadius: 8)
+                            .stroke(style:StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
+                        
+                    }.frame(width: 40, height: 40)
+                    Spacer()
+                }
                 Text("\(formattedDate)")
                 
-                Button {
-                    deleteNote()
-                } label: {
-                    Image(systemName: "trash")
-                }.disabled(note == nil)
-            }.padding()
+                HStack {
+                    Spacer()
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 8)
+                            .offset(x: 3, y: 5)
+                        
+                        RoundedRectangle(cornerRadius: 8)
+                            .foregroundColor(note == nil ? .gray : .red)
+                        
+                        Button {
+                            deleteNote()
+                        } label: {
+                            Image(systemName: "trash")
+                                .foregroundColor(.white)
+                        }
+                        .disabled(note == nil)
+                        
+                        RoundedRectangle(cornerRadius: 8)
+                            .stroke(style:StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
+                        
+                    }.frame(width: 40, height: 40)
+                }
+            }.padding(EdgeInsets(top:20, leading: 0, bottom: 20, trailing: 0))
+            
             
             ZStack {
                 RoundedRectangle(cornerRadius: 8).offset(x: 3, y: 5)
