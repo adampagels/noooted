@@ -34,56 +34,6 @@ struct NoteView: View {
         return formatter.string(from: date)
     }
     
-    func createNote() {
-        let newNote = Note(context: moc)
-        newNote.id = UUID()
-        newNote.title = title.isEmpty ? "Untitled" : title
-        newNote.content = content
-        newNote.tagColor = tagColor
-        newNote.isFavorite = isFavorite
-        newNote.lastUpdated = Date.now
-        do {
-            try moc.save()
-            dismiss()
-        } catch {
-            print("Error saving note: \(error)")
-        }
-    }
-    
-    func updateNote() {
-        guard let existingNote = note else {
-            print("Error retrieving note")
-            return
-        }
-        existingNote.title = title.isEmpty ? "Untitled" : title
-        existingNote.content = content
-        existingNote.tagColor = tagColor
-        existingNote.isFavorite = isFavorite
-        existingNote.lastUpdated = Date.now
-        
-        do {
-            try moc.save()
-            dismiss()
-        } catch {
-            print("Error updating note: \(error)")
-        }
-    }
-    
-    private func deleteNote() {
-        guard let existingNote = note else {
-            print("Error retrieving note")
-            return
-        }
-        moc.delete(existingNote)
-        
-        do {
-            try moc.save()
-            dismiss()
-        } catch {
-            print(error)
-        }
-    }
-    
     var body: some View {
         VStack {
             ZStack {
@@ -133,7 +83,6 @@ struct NoteView: View {
                     }.frame(width: 40, height: 40)
                 }
             }.padding(EdgeInsets(top:20, leading: 0, bottom: 20, trailing: 0))
-            
             
             ZStack {
                 RoundedRectangle(cornerRadius: 8).offset(x: 3, y: 5)
@@ -227,13 +176,45 @@ struct NoteView: View {
                     updateNote()
                 }
             } else {
-                if title.isEmpty && content.isEmpty {
-                    return
-                }
                 createNote()
             }
         }
         .padding(EdgeInsets(top:0, leading: 20, bottom: 20, trailing: 20))
+    }
+    
+    
+    private func createNote() {
+        DataManager.shared.createNote(
+            id: UUID(),
+            title: !title.isEmpty ? title : "Untitled",
+            content: content,
+            tagColor: !title.isEmpty ? tagColor : "red",
+            isFavorite: isFavorite,
+            lastUpdated: Date.now
+        )
+    }
+    
+    private func updateNote() {
+        guard let existingNote = note else {
+            print("Error retrieving note")
+            return
+        }
+        DataManager.shared.updateNote(
+            existingNote: existingNote,
+            id: UUID(),
+            title: !title.isEmpty ? title : "Untitled",
+            content: content,
+            tagColor: !title.isEmpty ? tagColor : "red",
+            isFavorite: isFavorite,
+            lastUpdated: lastUpdated)
+    }
+    
+    private func deleteNote() {
+        guard let existingNote = note else {
+            print("Error retrieving note")
+            return
+        }
+        DataManager.shared.deleteNote(existingNote: existingNote)
     }
 }
 
