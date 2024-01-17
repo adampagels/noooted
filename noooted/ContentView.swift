@@ -13,16 +13,6 @@ struct ContentView: View {
         SortDescriptor(\.lastUpdated, order: .reverse)
     ]) var notes: FetchedResults<Note>
     
-    let colorDict: [String: Color] =
-    ["red" : .red,
-     "orange" : .orange,
-     "yellow" : .yellow,
-     "green" : .green,
-     "blue" : .blue,
-     "indigo" : .indigo,
-     "purple" : .purple
-    ]
-    
     @State private var selectedNote: Note?
     @State private var showAddScreen = false
     
@@ -33,13 +23,7 @@ struct ContentView: View {
     var body: some View {
         ZStack {
             List(notes) { note in
-                ZStack {
-                    RoundedRectangle(cornerRadius: 8)
-                        .offset(x: 3, y: 5)
-                    
-                    RoundedRectangle(cornerRadius: 8)
-                        .foregroundColor(colorDict[note.tagColor ?? "red"])
-                    
+                NeubrutalShadowView(shape: "rectangle", contentColor: colorDict[note.tagColor ?? "red"] ?? .red) {
                     Button {
                         selectedNote = note
                     } label: {
@@ -62,9 +46,6 @@ struct ContentView: View {
                     }
                     .padding(EdgeInsets(top:0, leading: 0, bottom: 10, trailing: 10))
                     .foregroundColor(.black)
-                    
-                    RoundedRectangle(cornerRadius: 8)
-                        .stroke(style:StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
                 }
                 .padding(EdgeInsets(top:5, leading: 0, bottom: 5, trailing: 0))
                 .listRowSeparator(.hidden)
@@ -90,7 +71,7 @@ struct ContentView: View {
                 }
                 .padding(50)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
+            .frame(maxHeight: .infinity, alignment: .bottomTrailing)
         }
         .edgesIgnoringSafeArea(.bottom)
         .sheet(isPresented: $showAddScreen) {
