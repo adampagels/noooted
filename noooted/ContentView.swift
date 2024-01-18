@@ -57,19 +57,22 @@ struct ContentView: View {
             
             HStack {
                 Spacer()
-                Button(action: {
-                    showAddScreen.toggle()
-                }) {
-                    Image(systemName: "plus")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 24, height: 24)
-                        .padding()
-                        .foregroundColor(.white)
-                        .background(Color.black)
-                        .clipShape(Circle())
+                NeubrutalShadowView(shape: "circle", contentColor: .red) {
+                    Button(action: {
+                        showAddScreen.toggle()
+                    }) {
+                        Image(systemName: "plus")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 30, height: 30)
+                            .padding()
+                            .foregroundColor(.black)
+                            .background(Color.white)
+                            .clipShape(Circle())
+                    }
                 }
-                .padding(50)
+                .frame(width: 24, height: 24)
+                .padding(70)
             }
             .frame(maxHeight: .infinity, alignment: .bottomTrailing)
         }

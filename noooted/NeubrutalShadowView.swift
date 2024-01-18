@@ -37,7 +37,7 @@ struct NeubrutalShadowView<T: View>: View {
                     .fill(Color.black)
                 content
                 Circle()
-                    .stroke(style: StrokeStyle(lineWidth: 1, lineCap: .round, lineJoin: .round))
+                    .stroke(style: StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
             }
         }
     }
