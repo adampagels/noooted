@@ -34,6 +34,8 @@ struct ContentView: View {
                                     .padding(EdgeInsets(top: 3, leading: 0, bottom: 3, trailing: 5))
                                     .opacity(0.7)
                                 Spacer()
+                                Image(systemName: note.isFavorite ? "star.fill" : "star")
+                                    .frame(width: 35, height: 35)
                             }
                             HStack {
                                 Text("\(note.title ?? "Untitled")")
