@@ -74,12 +74,12 @@ struct NoteView: View {
             
             HStack {
                 ForEach(Array(colorDict.keys.sorted()), id: \.self) { key in
-                    NeubrutalShadowView(shape: "circle", contentColor: .white) {
+                    NeubrutalShadowView(shape: "circle", contentColor: .white, isInactive: tagColor != key) {
                         Circle().fill(colorDict[key] ?? .red).onTapGesture {
                             tagColor = key
                         }
                     }
-                    .saturation(tagColor == key ? 1 : 0.6)
+                    .saturation(tagColor == key ? 1 : 0.3)
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: 100)
