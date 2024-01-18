@@ -17,10 +17,7 @@ struct NoteView: View {
     @State private var tagColor = "red"
     @State private var isFavorite = false
     @State private var lastUpdated: Date? = nil
-    
-    func changeTagColor (tag: String) {
-        tagColor = tag
-    }
+    @State private var deleteButtonTapped = false
     
     var formattedDate: String {
         guard let date = lastUpdated else {
@@ -56,6 +53,7 @@ struct NoteView: View {
                     Spacer()
                     NeubrutalShadowView(shape: "rectangle", contentColor: note == nil ? .gray : .red) {
                         Button {
+                            deleteButtonTapped = true
                             deleteNote()
                         } label: {
                             Image(systemName: "trash")
@@ -78,7 +76,7 @@ struct NoteView: View {
                 ForEach(Array(colorDict.keys.sorted()), id: \.self) { key in
                     NeubrutalShadowView(shape: "circle", contentColor: .white) {
                         Circle().fill(colorDict[key] ?? .red).onTapGesture {
-                            changeTagColor(tag: key)
+                            tagColor = key
                         }
                     }
                     .saturation(tagColor == key ? 1 : 0.6)
@@ -103,9 +101,13 @@ struct NoteView: View {
         .onDisappear {
             if note != nil {
                 if title.isEmpty && content.isEmpty {
-                    deleteNote()
+                    if !deleteButtonTapped {
+                        deleteNote()
+                    }
                 } else {
-                    updateNote()
+                    if !deleteButtonTapped {
+                        updateNote()
+                    }
                 }
             } else {
                 createNote()
@@ -120,7 +122,7 @@ struct NoteView: View {
             id: UUID(),
             title: !title.isEmpty ? title : "Untitled",
             content: content,
-            tagColor: !title.isEmpty ? tagColor : "red",
+            tagColor: tagColor,
             isFavorite: isFavorite,
             lastUpdated: Date.now
         )
@@ -136,7 +138,7 @@ struct NoteView: View {
             id: UUID(),
             title: !title.isEmpty ? title : "Untitled",
             content: content,
-            tagColor: !title.isEmpty ? tagColor : "red",
+            tagColor: tagColor,
             isFavorite: isFavorite,
             lastUpdated: lastUpdated)
     }
@@ -147,6 +149,7 @@ struct NoteView: View {
             return
         }
         DataManager.shared.deleteNote(existingNote: existingNote)
+        dismiss()
     }
 }
 
