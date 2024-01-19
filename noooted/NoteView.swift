@@ -33,38 +33,12 @@ struct NoteView: View {
     
     var body: some View {
         VStack {
-            ZStack {
-                HStack {
-                    NeubrutalShadowView(shape: "rectangle", contentColor: .yellow) {
-                        Button {
-                            isFavorite.toggle()
-                        } label: {
-                            Image(systemName: isFavorite ? "star.fill" : "star")
-                                .foregroundColor(.white)
-                        }
-                    }
-                    .frame(width: 40, height: 40)
-                    Spacer()
-                }
-                
-                Text("\(formattedDate)")
-                
-                HStack {
-                    Spacer()
-                    NeubrutalShadowView(shape: "rectangle", contentColor: note == nil ? .gray : .red) {
-                        Button {
-                            deleteButtonTapped = true
-                            deleteNote()
-                        } label: {
-                            Image(systemName: "trash")
-                                .foregroundColor(.white)
-                        }
-                        .disabled(note == nil)
-                    }
-                    .frame(width: 40, height: 40)
-                }
-            }
-            .padding(EdgeInsets(top:20, leading: 0, bottom: 20, trailing: 0))
+            NoteHeaderView(
+                isFavorite: $isFavorite,
+                deleteButtonTapped: $deleteButtonTapped,
+                deleteNote: deleteNote,
+                formattedDate: formattedDate
+            )
             
             NeubrutalShadowView(shape: "rectangle", contentColor: .white) {
                 TextField("What should we call this?", text: $title)
@@ -156,5 +130,48 @@ struct NoteView: View {
 struct AddNoteView_Previews: PreviewProvider {
     static var previews: some View {
         NoteView()
+    }
+}
+
+struct NoteHeaderView: View {
+    @Binding var isFavorite: Bool
+    @Binding var deleteButtonTapped: Bool
+    var deleteNote: () -> Void
+    var formattedDate: String
+    var note: Note?
+    
+    var body: some View {
+        ZStack {
+            HStack {
+                NeubrutalShadowView(shape: "rectangle", contentColor: .yellow) {
+                    Button {
+                        isFavorite.toggle()
+                    } label: {
+                        Image(systemName: isFavorite ? "star.fill" : "star")
+                            .foregroundColor(.white)
+                    }
+                }
+                .frame(width: 40, height: 40)
+                Spacer()
+            }
+            
+            Text("\(formattedDate)")
+            
+            HStack {
+                Spacer()
+                NeubrutalShadowView(shape: "rectangle", contentColor: note == nil ? .gray : .red) {
+                    Button {
+                        deleteButtonTapped = true
+                        deleteNote()
+                    } label: {
+                        Image(systemName: "trash")
+                            .foregroundColor(.white)
+                    }
+                    .disabled(note == nil)
+                }
+                .frame(width: 40, height: 40)
+            }
+        }
+        .padding(EdgeInsets(top:20, leading: 0, bottom: 20, trailing: 0))
     }
 }
