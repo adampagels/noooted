@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import UIKit
 
 struct NoteView: View {
     @Environment(\.managedObjectContext) var moc
@@ -18,6 +19,7 @@ struct NoteView: View {
     @State private var isFavorite = false
     @State private var lastUpdated: Date? = nil
     @State private var deleteButtonTapped = false
+    @State private var isEditing = false
     
     var formattedDate: String {
         guard let date = lastUpdated else {
@@ -37,9 +39,10 @@ struct NoteView: View {
                 isFavorite: $isFavorite,
                 deleteButtonTapped: $deleteButtonTapped,
                 deleteNote: deleteNote,
-                formattedDate: formattedDate
+                formattedDate: formattedDate,
+                note: note,
+                isEditing: $isEditing
             )
-            
             NeubrutalShadowView(shape: "rectangle", contentColor: .white) {
                 TextField("What should we call this?", text: $title)
                     .padding(14)
@@ -61,6 +64,12 @@ struct NoteView: View {
             NeubrutalShadowView(shape: "rectangle", contentColor: .white) {
                 TextEditor(text: $content)
                     .padding()
+                    .onTapGesture {
+                        isEditing = true
+                    }
+                    .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification)) { _ in
+                        isEditing = false
+                    }
             }
         }
         .onAppear {
@@ -139,6 +148,7 @@ struct NoteHeaderView: View {
     var deleteNote: () -> Void
     var formattedDate: String
     var note: Note?
+    @Binding var isEditing: Bool
     
     var body: some View {
         ZStack {
@@ -159,17 +169,28 @@ struct NoteHeaderView: View {
             
             HStack {
                 Spacer()
-                NeubrutalShadowView(shape: "rectangle", contentColor: note == nil ? .gray : .red) {
-                    Button {
-                        deleteButtonTapped = true
-                        deleteNote()
-                    } label: {
-                        Image(systemName: "trash")
-                            .foregroundColor(.white)
+                if !isEditing {
+                    NeubrutalShadowView(shape: "rectangle", contentColor: note == nil ? .gray : .red) {
+                        Button {
+                            deleteButtonTapped = true
+                            deleteNote()
+                        } label: {
+                            Image(systemName: "trash")
+                                .foregroundColor(.white)
+                        }
+                        .disabled(note == nil)
                     }
-                    .disabled(note == nil)
+                    .frame(width: 40, height: 40)
+                } else {
+                    NeubrutalShadowView(shape: "rectangle", contentColor: .blue) {
+                        Button("Done") {
+                            // NOTE: Close Keyboard
+                            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                            isEditing = false
+                        }.foregroundColor(.white)
+                    }
+                    .frame(width: 70, height: 40)
                 }
-                .frame(width: 40, height: 40)
             }
         }
         .padding(EdgeInsets(top:20, leading: 0, bottom: 20, trailing: 0))
